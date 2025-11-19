@@ -25,6 +25,7 @@ type Dependencies struct {
 	TestUseCase   *usecase.TestUseCase
 	DeployUseCase *usecase.DeployUseCase
 	DockerUseCase *usecase.DockerUseCase
+	LintUseCase   *usecase.LintUseCase
 	Logger        domain.Logger
 	Config        *domain.Config
 }
@@ -40,6 +41,7 @@ wiederkehrenden Entwicklungs- und Deployment-Aufgaben.
 Es bietet Befehle für:
   - Build-Automation (build)
   - Test-Automation (test)
+  - Code-Linting (lint)
   - Deployment (deploy)
   - Docker-Operationen (docker)
   - Konfigurationsverwaltung (config)`,
@@ -55,6 +57,7 @@ Es bietet Befehle für:
 	// Add subcommands
 	rootCmd.AddCommand(newBuildCommand())
 	rootCmd.AddCommand(newTestCommand())
+	rootCmd.AddCommand(newLintCommand())
 	rootCmd.AddCommand(newDeployCommand())
 	rootCmd.AddCommand(newDockerCommand())
 	rootCmd.AddCommand(newConfigCommand())
@@ -105,12 +108,14 @@ func InitDependencies() (*Dependencies, error) {
 	// Use Cases
 	buildUC := usecase.NewBuildUseCase(exec, fs, log, cfg)
 	testUC := usecase.NewTestUseCase(exec, fs, log, cfg)
+	lintUC := usecase.NewLintUseCase(exec, fs, log, cfg)
 	deployUC := usecase.NewDeployUseCase(exec, fs, log, cfg)
 	dockerUC := usecase.NewDockerUseCase(exec, fs, log, cfg)
 
 	return &Dependencies{
 		BuildUseCase:  buildUC,
 		TestUseCase:   testUC,
+		LintUseCase:   lintUC,
 		DeployUseCase: deployUC,
 		DockerUseCase: dockerUC,
 		Logger:        log,

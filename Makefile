@@ -2,27 +2,36 @@
 
 # Variablen
 BINARY_NAME=devtool
+BINARY_ALIAS=dt
 BINARY_PATH=bin/$(BINARY_NAME)
+BINARY_ALIAS_PATH=bin/$(BINARY_ALIAS)
 CMD_PATH=./cmd/devtool
+CMD_ALIAS_PATH=./cmd/dt
 
 # Default target
 all: clean build
 
-# Build the application
+# Build the application (both binaries)
 build:
-	@echo "Building $(BINARY_NAME)..."
+	@echo "Building $(BINARY_NAME) and $(BINARY_ALIAS)..."
 	@mkdir -p bin
 	@go build -o $(BINARY_PATH) $(CMD_PATH)
+	@go build -o $(BINARY_ALIAS_PATH) $(CMD_ALIAS_PATH)
 	@echo "✓ Build completed: $(BINARY_PATH)"
+	@echo "✓ Build completed: $(BINARY_ALIAS_PATH)"
 
 # Build for multiple platforms
 build-all:
 	@echo "Building for multiple platforms..."
 	@mkdir -p bin
 	@GOOS=linux GOARCH=amd64 go build -o bin/$(BINARY_NAME)-linux-amd64 $(CMD_PATH)
+	@GOOS=linux GOARCH=amd64 go build -o bin/$(BINARY_ALIAS)-linux-amd64 $(CMD_ALIAS_PATH)
 	@GOOS=darwin GOARCH=amd64 go build -o bin/$(BINARY_NAME)-darwin-amd64 $(CMD_PATH)
+	@GOOS=darwin GOARCH=amd64 go build -o bin/$(BINARY_ALIAS)-darwin-amd64 $(CMD_ALIAS_PATH)
 	@GOOS=darwin GOARCH=arm64 go build -o bin/$(BINARY_NAME)-darwin-arm64 $(CMD_PATH)
+	@GOOS=darwin GOARCH=arm64 go build -o bin/$(BINARY_ALIAS)-darwin-arm64 $(CMD_ALIAS_PATH)
 	@GOOS=windows GOARCH=amd64 go build -o bin/$(BINARY_NAME)-windows-amd64.exe $(CMD_PATH)
+	@GOOS=windows GOARCH=amd64 go build -o bin/$(BINARY_ALIAS)-windows-amd64.exe $(CMD_ALIAS_PATH)
 	@echo "✓ All builds completed"
 
 # Run tests
@@ -62,9 +71,11 @@ clean:
 
 # Install the binary
 install: build
-	@echo "Installing $(BINARY_NAME)..."
+	@echo "Installing $(BINARY_NAME) and $(BINARY_ALIAS)..."
 	@cp $(BINARY_PATH) $(GOPATH)/bin/$(BINARY_NAME)
+	@cp $(BINARY_ALIAS_PATH) $(GOPATH)/bin/$(BINARY_ALIAS)
 	@echo "✓ Installed to $(GOPATH)/bin/$(BINARY_NAME)"
+	@echo "✓ Installed to $(GOPATH)/bin/$(BINARY_ALIAS)"
 
 # Run the application
 run: build
